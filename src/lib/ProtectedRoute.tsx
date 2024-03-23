@@ -6,7 +6,7 @@ const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
 	if (user !== undefined && user === null) {
 		return <Navigate to='/' />
 	} else {
-		return children
+		return user ? children : null
 	}
 }
 
