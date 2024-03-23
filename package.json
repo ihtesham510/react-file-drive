@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "dev": "npm-run-all --parallel dev:server dev:client",
+    "build": "vite build",
+    "dev:server": "convex dev",
+    "dev:client": "vite --open",
+    "predev": "convex dev --until-success"
   },
   "dependencies": {
     "@clerk/clerk-react": "^4.30.7",
