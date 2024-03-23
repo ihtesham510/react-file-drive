@@ -7,7 +7,7 @@ import { Skeleton } from './ui/skeleton'
 const Header = () => {
 	return (
 		<div className='w-full justify-center flex'>
-			<div className='flex items-center border-2 h-20 lg:w-[1024px] md:w-[770px] sm:w-[640px] xl:w-full xl:mx-24 justify-between gap-5 p-4'>
+			<div className='flex items-center  h-20 lg:w-[1024px] md:w-[770px] sm:w-[640px] xl:w-full xl:mx-24 justify-between gap-5 p-4'>
 				Link
 				<div className='flex gap-8'>
 					<SignedIn>
@@ -17,7 +17,7 @@ const Header = () => {
 							</ToolTip>
 						</div>
 						<div className='my-1'>
-							<UserButton />
+							<UserButton afterSignOutUrl='/' />
 						</div>
 					</SignedIn>
 					<SignedOut>
