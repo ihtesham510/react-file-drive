@@ -1,9 +1,9 @@
 import Dashboard from './Pages/Dashboard'
-import GetStarted from './Pages/GetStarted'
 import Header from './components/Header'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './lib/ProtectedRoute'
 import UnProtectedRoute from './lib/UnProtectedRoute'
+import Home from './Pages/Home'
 function App() {
 	return (
 		<>
@@ -14,7 +14,7 @@ function App() {
 						path='/'
 						element={
 							<UnProtectedRoute>
-								<GetStarted />
+								<Home />
 							</UnProtectedRoute>
 						}
 					/>
