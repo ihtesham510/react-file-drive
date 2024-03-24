@@ -8,6 +8,7 @@ function App() {
 	return (
 		<>
 			<Header />
+			<hr className='border-b-border border-b' />
 			<BrowserRouter>
 				<Routes>
 					<Route
