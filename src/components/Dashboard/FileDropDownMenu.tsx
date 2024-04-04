@@ -5,7 +5,6 @@ import { useMutation } from 'convex/react'
 import { api } from 'Convex/_generated/api'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Input } from '../ui/input'
-import RenameFileDialog from '../RenameFileDialog'
 import { useState } from 'react'
 import { Button } from '../ui/button'
 

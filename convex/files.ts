@@ -1,4 +1,3 @@
-import { internal } from './_generated/api'
 import { mutation, query } from './_generated/server'
 import { ConvexError, v } from 'convex/values'
 
@@ -29,6 +28,7 @@ export const getFiles = query({
 		return await ctx.db
 			.query('Files')
 			.filter(q => q.eq(q.field(args.orgId ? 'org.id' : 'userId'), args.orgId ?? args.userId))
+			.order('desc')
 			.collect()
 	},
 })

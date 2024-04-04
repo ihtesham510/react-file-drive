@@ -2,7 +2,7 @@ import { TypesofFile } from '@/lib/types'
 import { api } from 'Convex/_generated/api'
 import { Id } from 'Convex/_generated/dataModel'
 import { useMutation } from 'convex/react'
-import { FileCode2, FileIcon, FilePieChart } from 'lucide-react'
+import { FileCode2, FileIcon, FileJson2, FilePieChart, FileText } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Skeleton } from 'ui/skeleton'
 import 'assets/react.svg'
@@ -49,8 +49,18 @@ const FileCover: React.FC<Props> = ({ fileType, storageId, className }) => {
 					<FilePieChart className='size-14' />
 				</div>
 			)
+		case 'JSON':
+			return (
+				<div className={className}>
+					<FileJson2 className='size-14' />
+				</div>
+			)
 		case 'TEXT/PLAIN':
-			return <FileIcon />
+			return (
+				<div className={className}>
+					<FileText className='size-14' />
+				</div>
+			)
 		case 'PNG/JPEG':
 			if (url) {
 				return (

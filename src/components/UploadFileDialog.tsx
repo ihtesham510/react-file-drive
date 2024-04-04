@@ -25,7 +25,6 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 	const { organization } = useOrganization()
 	const createFile = useMutation(api.files.createFile)
 	const generateUploadUrl = useMutation(api.files.getUploadURL)
-	console.log(progress)
 	useEffect(() => {
 		setDisabled(uploading)
 	}, [uploading])
