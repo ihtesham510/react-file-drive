@@ -44,6 +44,9 @@ export const emptyTrash = internalMutation({
 			.query('TrashFiles')
 			.collect()
 			.then(data => data)
-		files.forEach(async f => await ctx.db.delete(f._id))
+		files.forEach(async f => {
+			await ctx.db.delete(f._id)
+			await ctx.storage.delete(f.storageId)
+		})
 	},
 })
