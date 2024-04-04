@@ -9,12 +9,16 @@ import { api } from 'Convex/_generated/api'
 import FileDropDownMenu from '../FileDropDownMenu'
 import NoFiles from '../NoFiles'
 import { useSearchQuery } from '@/components/SearchQueryContext'
+import { useMemo } from 'react'
 
 const CardView = () => {
 	const files = useGetFiles()
 	const getFileUrl = useMutation(api.files.getFileUrl)
 	const { query } = useSearchQuery()
-	const filteredFiles = files?.filter(file => (query == '' ? file : file.file_name.includes(query)))
+	const filteredFiles = useMemo(
+		() => files?.filter(file => (query == '' ? file : file.file_name.includes(query))),
+		[files, query],
+	)
 	if (filteredFiles?.length == 0) return <NoFiles withButton={files?.length == 0 ? true : false} />
 	return (
 		<div className='grid gap-2 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-rows-3 lg:grid-cols-4 w-max mx-auto'>
