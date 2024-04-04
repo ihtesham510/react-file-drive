@@ -1,0 +1,71 @@
+import { internal } from './_generated/api'
+import { mutation, query } from './_generated/server'
+import { ConvexError, v } from 'convex/values'
+
+export const createFile = mutation({
+	args: {
+		file_name: v.string(),
+		file_type: v.string(),
+		userId: v.string(),
+		orgId: v.optional(v.string()),
+		storageId: v.id('_storage'),
+		favorite: v.boolean(),
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db.insert('Files', {
+			file_name: args.file_name,
+			file_type: args.file_type,
+			storageId: args.storageId,
+			userId: args.orgId ? undefined : args.userId,
+			favorite: args.favorite,
+			org: args.orgId ? { id: args.orgId, createdby: args.userId } : undefined,
+		})
+	},
+})
+
+export const getFiles = query({
+	args: { userId: v.optional(v.string()), orgId: v.optional(v.string()), id: v.optional(v.id('Files')) },
+	handler: async (ctx, args) => {
+		if (args.id) {
+			return await ctx.db.get(args.id)
+		}
+		return await ctx.db
+			.query('Files')
+			.filter(q => q.eq(q.field(args.orgId ? 'org.id' : 'userId'), args.orgId ?? args.userId))
+			.collect()
+	},
+})
+
+export const renameFile = mutation({
+	args: { id: v.id('Files'), file_name: v.string() },
+	handler: async (ctx, args) => await ctx.db.patch(args.id, { file_name: args.file_name }),
+})
+
+export const moveToTrash = mutation({
+	args: { id: v.id('Files') },
+	handler: async (ctx, args) => {
+		const file = await ctx.db.get(args.id)
+		if (!file) {
+			throw new ConvexError('File not Found')
+		}
+		await ctx.db.insert('TrashFiles', {
+			file_name: file.file_name,
+			file_type: file.file_type,
+			storageId: file.storageId,
+			userId: file.org?.id ? undefined : file.userId,
+			org: file.org?.id && file.userId ? { id: file.org.id, createdby: file.userId } : undefined,
+		})
+		await ctx.db.delete(args.id)
+	},
+})
+
+export const getUploadURL = mutation(async ctx => {
+	return await ctx.storage.generateUploadUrl()
+})
+
+export const getFileUrl = mutation({
+	args: { id: v.id('_storage') },
+	handler: async (ctx, args) => {
+		return await ctx.storage.getUrl(args.id)
+	},
+})
