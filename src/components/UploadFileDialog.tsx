@@ -52,6 +52,7 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 
 	const handlecreateFile = async () => {
 		if (user && file && file_type) {
+			setDisabled(true)
 			toast({
 				title: 'Uploading',
 				description: 'Uploading Your file to Our Servers',
