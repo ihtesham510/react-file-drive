@@ -24,9 +24,11 @@
       "lib/*": ["./src/lib/*"],
       "Hooks/*": ["./src/Hooks/*"],
       "Pages/*": ["./src/Pages/*"],
+      "Convex/*": ["./convex/*"],
     },
     /* Linting */
     "strict": true,
+    "checkJs": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,

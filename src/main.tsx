@@ -4,13 +4,18 @@ import App from './App'
 import './index.css'
 import ConvexClerkProvider from 'components/ConvexClerkProvider'
 import { ThemeProvider } from './components/ThemeContext'
+import { Toaster } from './components/ui/toaster'
+import SearchQueryContextProvider from './components/SearchQueryContext'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
-		<ThemeProvider>
-			<ConvexClerkProvider>
-				<App />
-			</ConvexClerkProvider>
-		</ThemeProvider>
+		<SearchQueryContextProvider>
+			<ThemeProvider>
+				<ConvexClerkProvider>
+					<Toaster />
+					<App />
+				</ConvexClerkProvider>
+			</ThemeProvider>
+		</SearchQueryContextProvider>
 	</React.StrictMode>,
 )

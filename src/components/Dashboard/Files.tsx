@@ -1,5 +1,11 @@
+import CardView from './View/CardView'
+
 const Files = () => {
-	return <div>Files</div>
+	return (
+		<>
+			<CardView />
+		</>
+	)
 }
 
 export default Files
