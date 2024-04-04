@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from 'ui/dialog'
-import { PropsWithChildren, useEffect, useState } from 'react'
+import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import { DialogFooter, DialogHeader } from './ui/dialog'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
@@ -9,6 +9,9 @@ import { useOrganization, useUser } from '@clerk/clerk-react'
 import { allowedFiles, checkFileSize, formatFileName, formatFileTypes, isAllowedFile } from '@/lib/utils'
 import { TypesofFile } from '@/lib/types'
 import { toast } from 'ui/use-toast'
+import { Loader2Icon } from 'lucide-react'
+import axios from 'axios'
+import { Progress } from './ui/progress'
 
 const UploadFileDialog = ({ children }: PropsWithChildren) => {
 	const [file_name, setFile_name] = useState<string>('')
@@ -16,10 +19,16 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 	const [file, setSelectedFile] = useState<File>()
 	const [file_type, setFile_type] = useState<TypesofFile>()
 	const [isOpen, setIsOpen] = useState(false)
+	const [uploading, setUploading] = useState<boolean>(false)
 	const { user } = useUser()
+	const [progress, setProgress] = useState(0)
 	const { organization } = useOrganization()
 	const createFile = useMutation(api.files.createFile)
 	const generateUploadUrl = useMutation(api.files.getUploadURL)
+	console.log(progress)
+	useEffect(() => {
+		setDisabled(uploading)
+	}, [uploading])
 	useEffect(() => {
 		if (file && isAllowedFile(file)) {
 			setFile_name(formatFileName(file.name))
@@ -49,21 +58,28 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 			setDisabled(true)
 		}
 	}, [file])
-
-	const handlecreateFile = async () => {
+	const handlecreateFile = useCallback(async () => {
 		if (user && file && file_type) {
-			setDisabled(true)
+			setUploading(true)
 			toast({
 				title: 'Uploading',
-				description: 'Uploading Your file to Our Servers',
+				description: 'Your File is Uploading Please Wait',
+				duration: 2000,
 			})
 			const url = await generateUploadUrl()
-			const result = await fetch(url, {
-				method: 'POST',
-				headers: { 'Content-Type': file!.type },
-				body: file,
-			})
-			const { storageId } = await result.json()
+			const { storageId } = await axios
+				.post(url, file, {
+					headers: { 'Content-Type': file.type },
+					onUploadProgress: ProgressEvent => {
+						const { loaded, progress, total } = ProgressEvent
+						if (total && progress) {
+							const percentage = (loaded * 100) / total
+							setProgress(+percentage.toFixed(2))
+						}
+					},
+				})
+				.then(data => data.data)
+
 			await createFile({
 				file_name: file_name,
 				file_type: file_type,
@@ -72,16 +88,18 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 				orgId: organization?.id,
 				storageId: storageId,
 			})
-			setFile_name('')
-			setFile_type(undefined)
-			setSelectedFile(undefined)
 			toast({
 				title: 'Upload Success',
 				description: 'The file is uploaded to the server successfully',
 			})
 			setIsOpen(false)
+			setUploading(false)
+			setFile_name('')
+			setFile_type(undefined)
+			setSelectedFile(undefined)
+			setProgress(0)
 		}
-	}
+	}, [uploading, setUploading, isOpen, setIsOpen, setFile_type, file_name, setFile_type, file_type, createFile, toast])
 	return (
 		<>
 			<Dialog open={isOpen} onOpenChange={e => setIsOpen(e)}>
@@ -96,15 +114,22 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 						type='file'
 						accept={allowedFiles.toString()}
 						className='hidden'
-						size={500000}
 						onChange={e => setSelectedFile(e.target.files![0])}
 					/>
 					<label htmlFor='picture' className='flex text-sm gap-4 p-3 w-full border-border border rounded-md'>
 						Choose a file... <p>{file && file.name}</p>
 					</label>
+					{uploading && (
+						<>
+							<label htmlFor='progress' className='flex justify-between'>
+								Uploading...<p>{progress}%</p>
+							</label>
+							<Progress value={progress} id='progress' className='h-1' />
+						</>
+					)}
 					<DialogFooter>
-						<Button onClick={handlecreateFile} disabled={disabled}>
-							Upload
+						<Button onClick={handlecreateFile} disabled={disabled} className='flex justify-center w-[100px]'>
+							{uploading ? <Loader2Icon size={20} className='animate-spin' /> : 'Upload'}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
