@@ -53,7 +53,11 @@ const FileCover: React.FC<Props> = ({ fileType, storageId, className }) => {
 			return <FileIcon />
 		case 'PNG/JPEG':
 			if (url) {
-				return <img src={url} alt='Image' className={className} />
+				return (
+					<div className={className}>
+						<img src={url} alt='Image' className={`w-full h-full object-cover`} />
+					</div>
+				)
 			} else {
 				return <Skeleton className={className} />
 			}
