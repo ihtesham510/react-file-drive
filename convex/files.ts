@@ -24,11 +24,8 @@ export const createFile = mutation({
 })
 
 export const getFiles = query({
-	args: { userId: v.optional(v.string()), orgId: v.optional(v.string()), id: v.optional(v.id('Files')) },
+	args: { userId: v.optional(v.string()), orgId: v.optional(v.string()) },
 	handler: async (ctx, args) => {
-		if (args.id) {
-			return await ctx.db.get(args.id)
-		}
 		return await ctx.db
 			.query('Files')
 			.filter(q => q.eq(q.field(args.orgId ? 'org.id' : 'userId'), args.orgId ?? args.userId))
