@@ -1,6 +1,7 @@
 import { useOrganization, useUser } from '@clerk/clerk-react'
 import { api } from 'Convex/_generated/api'
 import { useQuery } from 'convex/react'
+import { SetStateAction } from 'react'
 
 export type Theme = 'dark' | 'light'
 const Files = () => {
@@ -21,3 +22,13 @@ export type TypesofFile =
 	| 'CSV'
 	| 'TEXT/PLAIN'
 	| 'ZIP'
+export type SortType = 'AlphDes' | 'AlphAcen' | 'CreatedAcen' | 'CreatedDec'
+
+export interface QueryContextType {
+	query: string
+	setQuery: React.Dispatch<SetStateAction<string>>
+	type: TypesofFile
+	setQueryType: React.Dispatch<SetStateAction<TypesofFile>>
+	sortType: SortType
+	setSortType: React.Dispatch<SetStateAction<SortType>>
+}

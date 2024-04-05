@@ -8,29 +8,14 @@ import { useMutation } from 'convex/react'
 import { api } from 'Convex/_generated/api'
 import FileDropDownMenu from '../FileDropDownMenu'
 import NoFiles from '../NoFiles'
-import { useSearchQuery } from '@/components/SearchQueryContext'
-import { useMemo } from 'react'
-import { rabinKarpSearch } from '@/lib/utils'
 
 const CardView = () => {
 	const files = useGetFiles()
 	const getFileUrl = useMutation(api.files.getFileUrl)
-	const { query, type } = useSearchQuery()
-	const filteredFiles = useMemo(() => {
-		if (query === '' && type === undefined) {
-			return files
-		}
-		return files?.filter(file => {
-			const queryMatch = query === '' || rabinKarpSearch(file.file_name.toLowerCase(), query.toLowerCase())
-			const typeMatch = type === undefined || file.file_type === type
-			return queryMatch && typeMatch
-		})
-	}, [files, query, type])?.sort()
-
-	if (filteredFiles?.length == 0) return <NoFiles withButton={files?.length == 0 ? true : false} />
+	if (files?.length == 0) return <NoFiles withButton={files?.length == 0 ? true : false} />
 	return (
 		<div className='grid gap-2 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-rows-3 lg:grid-cols-4 w-max mx-auto'>
-			{filteredFiles?.map(file => (
+			{files?.reverse()?.map(file => (
 				<Card className='size-80' key={file._id}>
 					<CardHeader>
 						<div className='flex justify-between'>

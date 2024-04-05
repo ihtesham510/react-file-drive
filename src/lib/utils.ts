@@ -1,7 +1,5 @@
 import { type ClassValue, clsx } from 'clsx'
-import { useMutation } from 'convex/react'
 import { twMerge } from 'tailwind-merge'
-import { api } from 'convex/_generated/api'
 import { TypesofFile } from './types'
 
 export function cn(...inputs: ClassValue[]) {
@@ -61,27 +59,21 @@ export function formatFileTypes(selectedFile: File): TypesofFile {
 	}
 }
 
-// Function to search for a pattern within a text using the Rabin-Karp algorithm
 export function rabinKarpSearch(text: string, pattern: string): boolean {
-	const prime: number = 101 // Prime number for hashing
+	const prime: number = 101
 	const textLength: number = text.length
 	const patternLength: number = pattern.length
-	const patternHash: number = hash(pattern) // Calculate hash of the pattern
-	let textHash: number = hash(text.slice(0, patternLength)) // Initial hash of the first substring
-
-	// Iterate through the text to find the pattern
+	const patternHash: number = hash(pattern)
+	let textHash: number = hash(text.slice(0, patternLength))
 	for (let i = 0; i <= textLength - patternLength; i++) {
-		// Check if the hashes match
 		if (textHash === patternHash && text.slice(i, i + patternLength) === pattern) {
-			return true // Return true if the pattern is found
+			return true
 		}
-		// Calculate hash for the next substring
 		textHash = rehash(text, textHash, i, patternLength, prime)
 	}
-	return false // Pattern not found
+	return false
 }
 
-// Function to calculate the hash of a string
 function hash(str: string): number {
 	let hashValue: number = 0
 	const prime: number = 101
@@ -91,11 +83,10 @@ function hash(str: string): number {
 	return hashValue
 }
 
-// Function to rehash for the next substring
 function rehash(text: string, prevHash: number, startIndex: number, patternLength: number, prime: number): number {
-	const newHash: number = (prevHash - text.charCodeAt(startIndex)) / prime // Remove the contribution of the first character
-	const newCharIndex: number = startIndex + patternLength // Index of the new character
-	const newHashValue: number = newHash + text.charCodeAt(newCharIndex) * Math.pow(prime, patternLength - 1) // Add the contribution of the new character
+	const newHash: number = (prevHash - text.charCodeAt(startIndex)) / prime
+	const newCharIndex: number = startIndex + patternLength
+	const newHashValue: number = newHash + text.charCodeAt(newCharIndex) * Math.pow(prime, patternLength - 1)
 	return newHashValue
 }
 
