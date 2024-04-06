@@ -4,14 +4,12 @@ import FileCover from '../FileCover'
 import { TypesofFile } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { EllipsisVertical } from 'lucide-react'
-import { useMutation } from 'convex/react'
-import { api } from 'Convex/_generated/api'
 import FileDropDownMenu from '../FileDropDownMenu'
 import NoFiles from '../NoFiles'
+import { Link } from 'react-router-dom'
 
 const CardView = () => {
 	const files = useGetFiles()
-	const getFileUrl = useMutation(api.files.getFileUrl)
 	if (files?.length == 0) return <NoFiles withButton={files?.length == 0 ? true : false} />
 	return (
 		<div className='grid gap-2 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-rows-3 lg:grid-cols-4 w-max mx-auto'>
@@ -36,14 +34,9 @@ const CardView = () => {
 						/>
 					</div>
 					<CardFooter className='my-4'>
-						<Button
-							onClick={async () => {
-								const url = await getFileUrl({ id: file.storageId })
-								url && window.open(url)
-							}}
-						>
-							Download
-						</Button>
+						<Link to='/files/myfile.pdf' target='_blank' download>
+							<Button>Download</Button>
+						</Link>
 					</CardFooter>
 				</Card>
 			))}
