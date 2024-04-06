@@ -11,6 +11,7 @@ export const restoreFile = mutation({
 		await ctx.db.insert('Files', {
 			file_name: file.file_name,
 			file_type: file.file_type,
+			url: file.url,
 			storageId: file.storageId,
 			userId: file.org?.id ? undefined : file.userId,
 			org: file.org?.id && file.userId ? { id: file.org.id, createdby: file.userId } : undefined,

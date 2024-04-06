@@ -19,15 +19,16 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 	const [file, setSelectedFile] = useState<File>()
 	const [file_type, setFile_type] = useState<TypesofFile>()
 	const [isOpen, setIsOpen] = useState(false)
-	const [uploading, setUploading] = useState<boolean>(false)
+	const [status, setStatus] = useState<'Uploading' | 'Storing' | 'Creating'>()
 	const { user } = useUser()
 	const [progress, setProgress] = useState(0)
 	const { organization } = useOrganization()
 	const createFile = useMutation(api.files.createFile)
 	const generateUploadUrl = useMutation(api.files.getUploadURL)
+	const getFileUrl = useMutation(api.files.getFileUrl)
 	useEffect(() => {
-		setDisabled(uploading)
-	}, [uploading])
+		setDisabled(status !== undefined)
+	}, [status])
 	useEffect(() => {
 		if (file && isAllowedFile(file)) {
 			setFile_name(formatFileName(file.name))
@@ -59,7 +60,7 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 	}, [file])
 	const handlecreateFile = useCallback(async () => {
 		if (user && file && file_type) {
-			setUploading(true)
+			setStatus('Uploading')
 			toast({
 				title: 'Uploading',
 				description: 'Your File is Uploading Please Wait',
@@ -78,12 +79,18 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 					},
 				})
 				.then(data => data.data)
-
+			setStatus('Storing')
+			const fileUrl = await getFileUrl({ id: storageId })
+			if (!fileUrl) {
+				throw new Error('Error while generating file url')
+			}
+			setStatus('Creating')
 			await createFile({
 				file_name: file_name,
 				file_type: file_type,
 				userId: user.id,
-				favorite: true,
+				url: fileUrl.toString(),
+				favorite: false,
 				orgId: organization?.id,
 				storageId: storageId,
 			})
@@ -92,13 +99,13 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 				description: 'The file is uploaded to the server successfully',
 			})
 			setIsOpen(false)
-			setUploading(false)
+			setStatus(undefined)
 			setFile_name('')
 			setFile_type(undefined)
 			setSelectedFile(undefined)
 			setProgress(0)
 		}
-	}, [uploading, setUploading, isOpen, setIsOpen, setFile_type, file_name, setFile_type, file_type, createFile, toast])
+	}, [status, setStatus, isOpen, setIsOpen, setFile_type, file_name, setFile_type, file_type, createFile, toast])
 	return (
 		<>
 			<Dialog open={isOpen} onOpenChange={e => setIsOpen(e)}>
@@ -118,17 +125,17 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 					<label htmlFor='picture' className='flex text-sm gap-4 p-3 w-full border-border border rounded-md'>
 						Choose a file... <p>{file && file.name}</p>
 					</label>
-					{uploading && (
+					{status && (
 						<>
 							<label htmlFor='progress' className='flex justify-between'>
-								Uploading...<p>{progress}%</p>
+								{status}...<p>{progress}%</p>
 							</label>
 							<Progress value={progress} id='progress' className='h-1' />
 						</>
 					)}
 					<DialogFooter>
 						<Button onClick={handlecreateFile} disabled={disabled} className='flex justify-center w-[100px]'>
-							{uploading ? <Loader2Icon size={20} className='animate-spin' /> : 'Upload'}
+							{status ? <Loader2Icon size={20} className='animate-spin' /> : 'Upload'}
 						</Button>
 					</DialogFooter>
 				</DialogContent>

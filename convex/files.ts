@@ -9,11 +9,13 @@ export const createFile = mutation({
 		orgId: v.optional(v.string()),
 		storageId: v.id('_storage'),
 		favorite: v.boolean(),
+		url: v.string(),
 	},
 	handler: async (ctx, args) => {
 		return await ctx.db.insert('Files', {
 			file_name: args.file_name,
 			file_type: args.file_type,
+			url: args.url,
 			storageId: args.storageId,
 			userId: args.orgId ? undefined : args.userId,
 			favorite: args.favorite,
@@ -49,6 +51,7 @@ export const moveToTrash = mutation({
 			file_name: file.file_name,
 			file_type: file.file_type,
 			storageId: file.storageId,
+			url: file.url,
 			userId: file.org?.id ? undefined : file.userId,
 			org: file.org?.id && file.userId ? { id: file.org.id, createdby: file.userId } : undefined,
 		})

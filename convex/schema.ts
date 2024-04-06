@@ -8,6 +8,7 @@ export default defineSchema({
 		favorite: v.optional(v.boolean()),
 		userId: v.optional(v.string()),
 		storageId: v.id('_storage'),
+		url: v.string(),
 		org: v.optional(
 			v.object({
 				id: v.string(),
@@ -20,6 +21,7 @@ export default defineSchema({
 	TrashFiles: defineTable({
 		file_name: v.string(),
 		file_type: v.string(),
+		url: v.string(),
 		userId: v.optional(v.string()),
 		storageId: v.id('_storage'),
 		org: v.optional(

@@ -31,7 +31,7 @@ const CardView = () => {
 					<div className='w-full flex justify-center items-center'>
 						<FileCover
 							fileType={file.file_type as TypesofFile}
-							storageId={file.storageId}
+							url={file.url}
 							className='w-full h-36 mx-5 flex justify-center items-center'
 						/>
 					</div>
