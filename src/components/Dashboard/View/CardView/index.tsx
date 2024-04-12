@@ -28,7 +28,10 @@ const CardView = () => {
 								</div>
 							</FileDropDownMenu>
 						</div>
-						<CardDescription>{file.file_type}</CardDescription>
+						<CardDescription className='flex justify-between'>
+							<p>{file.file_type}</p>
+							<p>{`${new Date(file._creationTime).toLocaleDateString()} ${new Date(file._creationTime).toLocaleTimeString()}`}</p>
+						</CardDescription>
 					</CardHeader>
 					<div className='w-full flex justify-center items-center'>
 						<FileCover
