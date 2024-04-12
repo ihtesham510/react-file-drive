@@ -16,7 +16,7 @@ const CardView = () => {
 	const files = useGetFiles()
 	if (files?.length == 0) return <NoFiles withButton={files?.length == 0 ? true : false} />
 	return (
-		<div className='grid gap-3 grid-cols-4 w-max mx-auto'>
+		<div className='grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-max mb-12 mx-auto'>
 			{files?.reverse()?.map(file => (
 				<Card className='size-80' key={file._id}>
 					<CardHeader>

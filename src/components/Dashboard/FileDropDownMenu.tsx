@@ -1,6 +1,6 @@
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from 'ui/dropdown-menu'
 import { Id } from 'Convex/_generated/dataModel'
-import { TrashIcon, PencilIcon } from 'lucide-react'
+import { TrashIcon, PencilIcon, ExternalLink } from 'lucide-react'
 import { useMutation } from 'convex/react'
 import { api } from 'Convex/_generated/api'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
@@ -23,6 +23,7 @@ type Props = {
 		file_name: string
 		file_type: string
 		storageId: Id<'_storage'>
+		url: string
 	}
 	children: React.ReactNode
 }
@@ -46,7 +47,7 @@ const FileDropDownMenu: React.FC<Props> = ({ file, children }) => {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent className='w-52'>
 					<DropdownMenuItem className='flex justify-between' onClick={handleDelete}>
-						<span>Delete</span>
+						<span className='text-red-400'>Delete</span>
 						<TrashIcon size={18} className='text-red-400' />
 					</DropdownMenuItem>
 					<DialogTrigger className='w-full'>
@@ -55,6 +56,10 @@ const FileDropDownMenu: React.FC<Props> = ({ file, children }) => {
 							<PencilIcon size={18} />
 						</DropdownMenuItem>
 					</DialogTrigger>
+					<DropdownMenuItem className='flex justify-between' onClick={() => window.open(file.url)}>
+						<span>Open</span>
+						<ExternalLink size={18} />
+					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 			<DialogContent>
