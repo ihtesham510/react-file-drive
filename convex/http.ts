@@ -41,6 +41,11 @@ http.route({
 						image_url: result.data.image_url,
 					})
 					break
+				case 'user.deleted':
+					if (result.data.id && result.data.deleted) {
+						await ctx.runMutation(internal.user.deleteUserAndData, { id: result.data.id })
+					}
+					break
 				case 'organizationMembership.created':
 					break
 				case 'organizationMembership.updated':

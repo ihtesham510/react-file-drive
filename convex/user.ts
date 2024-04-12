@@ -52,3 +52,32 @@ export const getUserbyId = query({
 			.then(data => data.filter(u => (args._id ? args._id === u._id : args.id === u.id))[0])
 	},
 })
+export const deleteUserAndData = internalMutation({
+	args: { id: v.string(), _id: v.optional(v.id('User')) },
+	async handler(ctx, args) {
+		const user = await ctx.db
+			.query('User')
+			.filter(q => q.eq(q.field(args._id ? '_id' : 'id'), args._id ?? args.id))
+			.collect()
+			.then(data => data.filter(u => (args._id ? args._id === u._id : args.id === u.id))[0])
+		const userPersonalFiles = await ctx.db
+			.query('Files')
+			.filter(q => q.eq(q.field('userId'), user.id))
+			.collect()
+			.then(data => data)
+		const userOrgFiles = await ctx.db
+			.query('Files')
+			.filter(q => q.eq(q.field('org.createdby'), user.id))
+			.collect()
+			.then(data => data)
+		userPersonalFiles.forEach(async f => {
+			await ctx.db.delete(f._id)
+			await ctx.storage.delete(f.storageId)
+		})
+		userOrgFiles.forEach(async f => {
+			await ctx.db.delete(f._id)
+			await ctx.storage.delete(f.storageId)
+		})
+		return await ctx.db.delete(user._id)
+	},
+})
