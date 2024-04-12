@@ -34,7 +34,7 @@ export default defineSchema({
 	User: defineTable({
 		id: v.string(),
 		first_name: v.string(),
-		last_name: v.string(),
+		last_name: v.optional(v.string()),
 		image_url: v.string(),
 		username: v.optional(v.string()),
 	}),

@@ -28,7 +28,7 @@ http.route({
 						id: result.data.id,
 						username: result.data.username === null ? undefined : result.data.username,
 						first_name: result.data.first_name,
-						last_name: result.data.last_name,
+						last_name: result.data.last_name === null ? undefined : result.data.last_name,
 						image_url: result.data.image_url,
 					})
 					break
@@ -37,7 +37,7 @@ http.route({
 						id: result.data.id,
 						username: result.data.username === null ? undefined : result.data.username,
 						first_name: result.data.first_name,
-						last_name: result.data.last_name,
+						last_name: result.data.last_name === null ? undefined : result.data.last_name,
 						image_url: result.data.image_url,
 					})
 					break
