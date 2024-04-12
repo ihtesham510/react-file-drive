@@ -8,7 +8,7 @@ import { FileUpIcon } from 'lucide-react'
 const Header = () => {
 	return (
 		<div className='w-full justify-center flex'>
-			<div className='flex items-center  h-20 lg:w-[1024px] md:w-[770px] sm:w-[640px] xl:w-full xl:mx-10  justify-between gap-5 p-4'>
+			<div className='flex items-center h-20 lg:w-[1024px] md:w-[770px] sm:w-[640px] xl:w-full xl:mx-10  justify-between gap-5 p-4'>
 				<p className='flex gap-2 items-end'>
 					<FileUpIcon className='size-8' />
 					<p className='text-xl'>React File-Drive</p>

@@ -61,7 +61,7 @@ const FileCover: React.FC<Props> = ({ fileType, url, className }) => {
 		case 'PNG/JPEG':
 			return (
 				<div className={className}>
-					<img src={url} alt='Image' className={`w-full h-full object-cover`} />
+					<img src={url} alt='Image' className={`w-[325px] h-full rounded-md object-cover`} />
 				</div>
 			)
 		default:

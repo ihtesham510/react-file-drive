@@ -1,5 +1,5 @@
-import UploadFileDialog from '../UploadFileDialog'
-import { Button } from '../ui/button'
+import UploadFileDialog from '@/components/UploadFileDialog'
+import { Button } from 'ui/button'
 
 const NoFiles = ({ withButton }: { withButton: boolean }) => {
 	return (
