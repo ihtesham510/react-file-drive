@@ -33,7 +33,7 @@ http.route({
 					})
 					break
 				case 'user.updated':
-					await ctx.runMutation(internal.user.createUser, {
+					await ctx.runMutation(internal.user.updateUser, {
 						id: result.data.id,
 						username: result.data.username === null ? undefined : result.data.username,
 						first_name: result.data.first_name,
