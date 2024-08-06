@@ -91,7 +91,6 @@ const UploadFileDialog = ({ children }: PropsWithChildren) => {
 				file_type: file_type,
 				userId: user.id,
 				url: fileUrl.toString(),
-				favorite: false,
 				orgId: organization?.id,
 				storageId: storageId,
 			})

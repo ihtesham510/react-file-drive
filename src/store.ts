@@ -35,3 +35,19 @@ export const useThemeStore = create<TypeThemeStore>()(set => ({
 	theme: isDarkTheme() ? 'dark' : 'light',
 	toggleTheme: () => set(state => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
 }))
+
+export interface TypeAlertDeleteDialog {
+	open: boolean
+	toggleDialog: (e?: boolean) => void
+  confirmAction: () => 
+  void,
+	onConfirm: (func: () => void) => void
+	onCancel: () => void
+}
+export const useAlertDeleteDialog = create<TypeAlertDeleteDialog>(set => ({
+  open: false,
+  confirmAction: () => {},
+  toggleDialog: e => set(state => ({ ...state, open: e ?? !state.open })),
+  onConfirm: func => set(state => ({ ...state, confirmAction: func })),
+  onCancel: () => set(state => ({ ...state, open: false })),
+}));

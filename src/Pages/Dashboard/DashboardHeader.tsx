@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import UploadFileDialog from '@/components/UploadFileDialog'
 import { useQueryStore } from '@/store'
 import { SortType, TypesofFile } from '@/lib/types'
-import { ArrowDownWideNarrow, ListFilter, PlusIcon, Search } from 'lucide-react'
+import { ArrowDownWideNarrow, ListFilter, PlusIcon, Search, Trash2Icon } from 'lucide-react'
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
@@ -12,6 +12,10 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu'
+import { useLocation } from 'react-router'
+import { useGetTrashFiles } from '@/Hooks/useGetTrashFiles'
+import { useTrash } from '@/Hooks/useTrash'
+import { useUser } from '@clerk/clerk-react'
 interface QuerySortArrayType {
 	value: SortType
 	title: string
@@ -86,9 +90,14 @@ const DashboardHeader = () => {
 		return filetype === fileType
 	}
 
+	const location = useLocation()
+	const isActive = (path: string) => location.pathname.split('/').includes(path)
+	const files = useGetTrashFiles()
+  const {emptyTrash} = useTrash()
+  const {user} = useUser()
 	return (
 		<>
-			<div className='flex items-center lg:sticky top-20 bg-background justify-between p-4'>
+			<div className='flex items-center bg-background justify-between p-4'>
 				<div className='relative hidden sm:block'>
 					<Search className='absolute left-2 top-3 h-4 w-4 text-muted-foreground' />
 					<Input
@@ -144,13 +153,19 @@ const DashboardHeader = () => {
 							))}
 						</DropdownMenuContent>
 					</DropdownMenu>
-
-					<UploadFileDialog>
-						<Button className='h-8 gap-1' size='sm'>
-							<PlusIcon />
-							<p className='hidden md:block'>Upload File</p>
+					{isActive('trash') && user ? (
+						<Button className='h-8 gap-2 bg-destructive' size='sm' disabled={files?.length === 0} onClick={()=>emptyTrash({id:user.id})}>
+							<Trash2Icon className='size-5 text-destructive-foreground' />
+							<p className='hidden md:block text-destructive-foreground'>Empyt Trash</p>
 						</Button>
-					</UploadFileDialog>
+					) : (
+						<UploadFileDialog>
+							<Button className='h-8 gap-1' size='sm'>
+								<PlusIcon />
+								<p className='hidden md:block'>Upload File</p>
+							</Button>
+						</UploadFileDialog>
+					)}
 				</div>
 			</div>
 			<div>

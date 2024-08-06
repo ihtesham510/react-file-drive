@@ -8,18 +8,21 @@ export const createFile = mutation({
 		userId: v.string(),
 		orgId: v.optional(v.string()),
 		storageId: v.id('_storage'),
-		favorite: v.boolean(),
 		url: v.string(),
 	},
 	handler: async (ctx, args) => {
+		const user = await ctx.db
+			.query('User')
+			.filter(q => q.eq(q.field('id'), args.userId))
+			.first()
+		if (!user) throw new ConvexError('User Not Found')
 		return await ctx.db.insert('Files', {
 			file_name: args.file_name,
 			file_type: args.file_type,
 			url: args.url,
 			storageId: args.storageId,
-			userId: args.orgId ? undefined : args.userId,
-			favorite: args.favorite,
-			org: args.orgId ? { id: args.orgId, createdby: args.userId } : undefined,
+			userId: args.orgId ? undefined : user._id,
+			org: args.orgId ? { id: args.orgId, createdby: user._id } : undefined,
 		})
 	},
 })
@@ -27,36 +30,27 @@ export const createFile = mutation({
 export const getFiles = query({
 	args: { userId: v.optional(v.string()), orgId: v.optional(v.string()) },
 	handler: async (ctx, args) => {
-		return await ctx.db
+		const trashFiles = await ctx.db
+			.query('TrashFiles')
+			.collect()
+			.then(f => f.map(file => file.fileId))
+		const user = await ctx.db
+			.query('User')
+			.filter(q => q.eq(q.field('id'), args.userId))
+			.first()
+		if (!user) throw new ConvexError('User Not Found')
+		const files = await ctx.db
 			.query('Files')
-			.filter(q => q.eq(q.field(args.orgId ? 'org.id' : 'userId'), args.orgId ?? args.userId))
+			.filter(q => q.eq(q.field(args.orgId ? 'org.id' : 'userId'), args.orgId ?? user._id))
 			.order('desc')
 			.collect()
+		return files.filter(file => !trashFiles.includes(file._id))
 	},
 })
 
 export const renameFile = mutation({
 	args: { id: v.id('Files'), file_name: v.string() },
 	handler: async (ctx, args) => await ctx.db.patch(args.id, { file_name: args.file_name }),
-})
-
-export const moveToTrash = mutation({
-	args: { id: v.id('Files') },
-	handler: async (ctx, args) => {
-		const file = await ctx.db.get(args.id)
-		if (!file) {
-			throw new ConvexError('File not Found')
-		}
-		await ctx.db.insert('TrashFiles', {
-			file_name: file.file_name,
-			file_type: file.file_type,
-			storageId: file.storageId,
-			url: file.url,
-			userId: file.org?.id ? undefined : file.userId,
-			org: file.org?.id && file.userId ? { id: file.org.id, createdby: file.userId } : undefined,
-		})
-		await ctx.db.delete(args.id)
-	},
 })
 
 export const getUploadURL = mutation(async ctx => {

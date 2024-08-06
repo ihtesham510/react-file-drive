@@ -5,31 +5,25 @@ export default defineSchema({
 	Files: defineTable({
 		file_name: v.string(),
 		file_type: v.string(),
-		favorite: v.optional(v.boolean()),
-		userId: v.optional(v.string()),
+		userId: v.optional(v.id('User')),
 		storageId: v.id('_storage'),
 		url: v.string(),
 		org: v.optional(
 			v.object({
 				id: v.string(),
-				createdby: v.string(),
+				createdby: v.id('User'),
 			}),
 		),
 	}).searchIndex('name', {
 		searchField: 'file_name',
 	}),
 	TrashFiles: defineTable({
-		file_name: v.string(),
-		file_type: v.string(),
-		url: v.string(),
-		userId: v.optional(v.string()),
-		storageId: v.id('_storage'),
-		org: v.optional(
-			v.object({
-				id: v.string(),
-				createdby: v.string(),
-			}),
-		),
+		userId: v.id('User'),
+		fileId: v.id('Files'),
+	}),
+	FavoritesFiles: defineTable({
+		userId: v.id('User'),
+		fileId: v.id('Files'),
 	}),
 	User: defineTable({
 		id: v.string(),

@@ -8,7 +8,7 @@ const Header = () => {
 	return (
 		<div className='flex sticky top-0 z-50 lg:bg-background backdrop-blur py-4 items-center mx-4 sm:h-20 justify-between sm:justify-between'>
 			<SideBarSheet>
-				<Button variant='outline' size='sm'>
+				<Button variant='ghost' size='sm'>
 					<AlignLeft />
 				</Button>
 			</SideBarSheet>

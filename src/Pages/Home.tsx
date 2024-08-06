@@ -1,5 +1,11 @@
+import { SignInButton } from '@clerk/clerk-react'
+
 const Home = () => {
-	return <div>Home</div>
+	return (
+		<div>
+			<SignInButton>sign in</SignInButton>
+		</div>
+	)
 }
 
 export default Home
