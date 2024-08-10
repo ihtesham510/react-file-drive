@@ -32,4 +32,11 @@ export default defineSchema({
 		image_url: v.string(),
 		username: v.optional(v.string()),
 	}),
+	organizations: defineTable({
+		id: v.string(),
+		name: v.string(),
+		created_at: v.number(),
+		updated_at: v.number(),
+		users: v.array(v.object({ userId: v.id('User'), role: v.string() })),
+	}),
 })

@@ -7,7 +7,7 @@
     "dev": "npm-run-all --parallel dev:server dev:client",
     "build": "vite build",
     "dev:server": "convex dev",
-    "dev:client": "vite --open --host",
+    "dev:client": "vite --open",
     "predev": "convex dev --until-success"
   },
   "dependencies": {

@@ -19,6 +19,7 @@ import type * as crons from "../crons.js";
 import type * as favorates from "../favorates.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
+import type * as organizations from "../organizations.js";
 import type * as trash from "../trash.js";
 import type * as user from "../user.js";
 
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   favorates: typeof favorates;
   files: typeof files;
   http: typeof http;
+  organizations: typeof organizations;
   trash: typeof trash;
   user: typeof user;
 }>;

@@ -47,8 +47,52 @@ http.route({
 					}
 					break
 				case 'organizationMembership.created':
+					console.log(`Member-ship created for ${result.data.public_user_data.identifier}`)
+					await ctx.runMutation(internal.organizations.createMembership, {
+						role: result.data.role,
+						orgId: result.data.organization.id,
+						userId: result.data.public_user_data.user_id,
+					})
+					break
+				case 'organizationMembership.deleted':
+					console.log(`Member-ship deleted for ${result.data.public_user_data.identifier}`)
+					await ctx.runMutation(internal.organizations.deleteMembership, {
+						orgId: result.data.organization.id,
+						userId: result.data.public_user_data.user_id,
+					})
+
 					break
 				case 'organizationMembership.updated':
+					console.log(`Member-ship updated for ${result.data.public_user_data.identifier}`)
+					await ctx.runMutation(internal.organizations.updateMembership, {
+						role: result.data.role,
+						orgId: result.data.organization.id,
+						userId: result.data.public_user_data.user_id,
+					})
+					break
+				case 'organization.created':
+					console.log(`organization created ${result.data.name}`)
+					await ctx.runMutation(internal.organizations.createOrganization, {
+						id: result.data.id,
+						name: result.data.name,
+						created_at: result.data.created_at,
+						updated_at: result.data.updated_at,
+					})
+					break
+				case 'organization.updated':
+					console.log(`organization updated ${result.data.name}`)
+					await ctx.runMutation(internal.organizations.updateOrganization, {
+						id: result.data.id,
+						name: result.data.name,
+						created_at: result.data.created_at,
+						updated_at: result.data.updated_at,
+					})
+					break
+				case 'organization.deleted':
+					console.log(`organization deleted`)
+					await ctx.runMutation(internal.organizations.deleteOrganization, {
+						id: result.data.id,
+					})
 					break
 			}
 

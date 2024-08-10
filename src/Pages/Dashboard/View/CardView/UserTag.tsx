@@ -5,8 +5,6 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
 const UserTag = ({ userId }: { userId?: Id<'User'> }) => {
 	const u = useQuery(api.user.getUserbyId, { docId: userId })
-	console.log(u)
-	console.log(userId)
 	return (
 		<div className='flex items-center gap-3 w-full'>
 			<Avatar>

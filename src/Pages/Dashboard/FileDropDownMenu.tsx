@@ -11,6 +11,7 @@ import { Id } from 'Convex/_generated/dataModel'
 import { useLocation } from 'react-router'
 import { useTrash } from '@/Hooks/useTrash'
 import { useAlertDeleteDialog } from '@/store'
+import { useGetUserData } from '@/Hooks/useGetUserData'
 
 type Props = {
 	file: File
@@ -49,13 +50,21 @@ const FileDropDownMenu: React.FC<Props> = ({ file, children }) => {
 		if (file.org) {
 			await toggleFavorites({ fileId: file._id, userId: file.org.createdby as Id<'User'> })
 		}
-    	if (file.userId) {
+		if (file.userId) {
 			await toggleFavorites({ fileId: file._id, userId: file.userId as Id<'User'> })
 		}
 	}
 
 	const location = useLocation()
 	const isActive = (path: string) => location.pathname.split('/').includes(path)
+	const userData = useGetUserData()
+	const isDisabled = () => {
+		if (file.org && userData) {
+			if (userData._id === file.org.createdby) return false
+			if (userData.role !== 'org:admin') return true
+		}
+		return false
+	}
 
 	return (
 		<Dialog open={isOpen} onOpenChange={e => setIsOpen(e)}>
@@ -76,12 +85,12 @@ const FileDropDownMenu: React.FC<Props> = ({ file, children }) => {
 							</DropdownMenuItem>
 						</>
 					) : (
-						<DropdownMenuItem className='flex justify-between' onClick={handleMoveToTrash}>
+						<DropdownMenuItem className='flex justify-between' onClick={handleMoveToTrash} disabled={!!isDisabled()}>
 							<span>Move To Trash</span>
 							<TrashIcon size={18} className='text-red-400' />
 						</DropdownMenuItem>
 					)}
-					{!isActive('trash')&& (
+					{!isActive('trash') && (
 						<DropdownMenuItem className='flex justify-between' onClick={handleToggleFavorites}>
 							{isFavorite ? (
 								<>

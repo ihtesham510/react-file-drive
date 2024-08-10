@@ -93,8 +93,8 @@ const DashboardHeader = () => {
 	const location = useLocation()
 	const isActive = (path: string) => location.pathname.split('/').includes(path)
 	const files = useGetTrashFiles()
-  const {emptyTrash} = useTrash()
-  const {user} = useUser()
+	const { emptyTrash } = useTrash()
+	const { user } = useUser()
 	return (
 		<>
 			<div className='flex items-center bg-background justify-between p-4'>
@@ -122,8 +122,9 @@ const DashboardHeader = () => {
 							<DropdownMenuCheckboxItem checked={fileType === undefined} onClick={() => setFileType(undefined)}>
 								All Files
 							</DropdownMenuCheckboxItem>
-							{fileTypeArray.map(menu => (
+							{fileTypeArray.map((menu, index) => (
 								<DropdownMenuCheckboxItem
+									key={index}
 									checked={isFilterTypeItemChecked(menu.value)}
 									onClick={() => setFileType(menu.value)}
 								>
@@ -143,8 +144,9 @@ const DashboardHeader = () => {
 						<DropdownMenuContent align='end'>
 							<DropdownMenuLabel>Sort by</DropdownMenuLabel>
 							<DropdownMenuSeparator />
-							{sortDropdownArray.map(menu => (
+							{sortDropdownArray.map((menu, index) => (
 								<DropdownMenuCheckboxItem
+									key={index}
 									checked={isSortItemChecked(menu.value)}
 									onClick={() => setSortType(menu.value)}
 								>
@@ -154,7 +156,12 @@ const DashboardHeader = () => {
 						</DropdownMenuContent>
 					</DropdownMenu>
 					{isActive('trash') && user ? (
-						<Button className='h-8 gap-2 bg-destructive' size='sm' disabled={files?.length === 0} onClick={()=>emptyTrash({id:user.id})}>
+						<Button
+							className='h-8 gap-2 bg-destructive'
+							size='sm'
+							disabled={files?.length === 0}
+							onClick={() => emptyTrash({ id: user.id })}
+						>
 							<Trash2Icon className='size-5 text-destructive-foreground' />
 							<p className='hidden md:block text-destructive-foreground'>Empyt Trash</p>
 						</Button>

@@ -53,6 +53,29 @@ export const getUserbyId = query({
 	},
 })
 
+export const getUserData = query({
+	args: { id: v.string(), orgId: v.optional(v.string()) },
+	handler: async (ctx, args) => {
+		let role: string | undefined
+		const user = await ctx.db
+			.query('User')
+			.filter(q => q.eq(q.field('id'), args.id))
+			.first()
+		if (!user) throw new ConvexError('user not found')
+		if (args.orgId) {
+			const org = await ctx.db
+				.query('organizations')
+				.filter(q => q.eq(q.field('id'), args.orgId))
+				.first()
+			if (!org) throw new ConvexError('org not found')
+			const orgUser = org.users.find(u => u.userId === user._id)
+			if (!orgUser) throw new ConvexError(`${user.first_name} is not present in ${org.name}`)
+			role = orgUser.role
+		}
+		return user ? { ...user, role: role } : undefined
+	},
+})
+
 export const deleteUserAndData = internalMutation({
 	args: { id: v.optional(v.string()), docId: v.optional(v.id('User')) },
 	async handler(ctx, args) {
@@ -63,11 +86,11 @@ export const deleteUserAndData = internalMutation({
 		if (!user) return 'user not found'
 		const userPersonalFiles = await ctx.db
 			.query('Files')
-			.filter(q => q.eq(q.field('userId'), user.id))
+			.filter(q => q.eq(q.field('userId'), user._id))
 			.collect()
 		const userOrgFiles = await ctx.db
 			.query('Files')
-			.filter(q => q.eq(q.field('org.createdby'), user.id))
+			.filter(q => q.eq(q.field('org.createdby'), user._id))
 			.collect()
 		userPersonalFiles.forEach(async f => {
 			await ctx.db.delete(f._id)
@@ -78,6 +101,7 @@ export const deleteUserAndData = internalMutation({
 			await ctx.storage.delete(f.storageId)
 		})
 		await ctx.db.delete(user._id)
-		return { ...user, personalFiles: userPersonalFiles, orgFiles: userOrgFiles }
+		const data = { ...user, personalFiles: userPersonalFiles, orgFiles: userOrgFiles }
+		return data
 	},
 })
