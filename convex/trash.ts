@@ -67,27 +67,25 @@ export const deleteFromTrash = mutation({
 		return filetodelete
 	},
 })
-export const emptyTrash = mutation({
-	args: { userId: v.optional(v.id('User')), id: v.optional(v.string()) },
-	async handler(ctx, args) {
-		const getUserId = await ctx.db
-			.query('User')
-			.filter(q => q.eq(q.field('id'), args.id))
-			.first()
-		const userId = getUserId ? getUserId._id : undefined
 
-		const allTrashFiles = await ctx.db
+export const emptyTrash = mutation({
+	args: { userId: v.optional(v.string()), orgId: v.optional(v.string()) },
+	handler: async (ctx, args) => {
+		const trashFiles = await ctx.db
 			.query('TrashFiles')
-			.filter(q => q.eq(q.field('userId'), args.userId ?? userId))
 			.collect()
-		allTrashFiles.forEach(async f => {
-			const file = await ctx.db.get(f.fileId)
-			if (file) {
-				await ctx.storage.delete(file.storageId)
-				await ctx.db.delete(file._id)
-				await ctx.db.delete(f._id)
-			}
-		})
-		return allTrashFiles
+			.then(f => f.map(file => file.fileId))
+		const user = await ctx.db
+			.query('User')
+			.filter(q => q.eq(q.field('id'), args.userId))
+			.first()
+		if (!user) throw new ConvexError('User Not Found')
+		const files = await ctx.db
+			.query('Files')
+			.filter(q => q.eq(q.field(args.orgId ? 'org.id' : 'userId'), args.orgId ?? user._id))
+			.order('desc')
+			.collect()
+		const filteredFiles = files.filter(file => trashFiles.includes(file._id))
+		filteredFiles.forEach(async file => await ctx.db.delete(file._id))
 	},
 })

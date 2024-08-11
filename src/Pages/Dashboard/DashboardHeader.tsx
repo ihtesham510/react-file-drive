@@ -15,7 +15,7 @@ import {
 import { useLocation } from 'react-router'
 import { useGetTrashFiles } from '@/Hooks/useGetTrashFiles'
 import { useTrash } from '@/Hooks/useTrash'
-import { useUser } from '@clerk/clerk-react'
+import { useGetUserData } from '@/Hooks/useGetUserData'
 interface QuerySortArrayType {
 	value: SortType
 	title: string
@@ -94,7 +94,12 @@ const DashboardHeader = () => {
 	const isActive = (path: string) => location.pathname.split('/').includes(path)
 	const files = useGetTrashFiles()
 	const { emptyTrash } = useTrash()
-	const { user } = useUser()
+	const user = useGetUserData()
+	const isTrashDisabled = () => {
+		if (files?.length === 0) return true
+		if (user?.role && user.role !== 'org:admin') return true
+		return false
+	}
 	return (
 		<>
 			<div className='flex items-center bg-background justify-between p-4'>
@@ -157,13 +162,13 @@ const DashboardHeader = () => {
 					</DropdownMenu>
 					{isActive('trash') && user ? (
 						<Button
-							className='h-8 gap-2 bg-destructive'
+							className='h-8 gap-2 bg-destructive group'
 							size='sm'
-							disabled={files?.length === 0}
-							onClick={() => emptyTrash({ id: user.id })}
+							disabled={isTrashDisabled()}
+							onClick={emptyTrash}
 						>
-							<Trash2Icon className='size-5 text-destructive-foreground' />
-							<p className='hidden md:block text-destructive-foreground'>Empyt Trash</p>
+							<Trash2Icon className='size-5 text-destructive-foreground group-hover:text-black' />
+							<p className='hidden md:block text-destructive-foreground group-hover:text-black'>Empyt Trash</p>
 						</Button>
 					) : (
 						<UploadFileDialog>
