@@ -24,22 +24,26 @@ http.route({
 
 			switch (result.type) {
 				case 'user.created':
-					await ctx.runMutation(internal.user.createUser, {
-						id: result.data.id,
-						username: result.data.username === null ? undefined : result.data.username,
-						first_name: result.data.first_name,
-						last_name: result.data.last_name === null ? undefined : result.data.last_name,
-						image_url: result.data.image_url,
-					})
+					if (result.data.first_name) {
+						await ctx.runMutation(internal.user.createUser, {
+							id: result.data.id,
+							username: result.data.username === null ? undefined : result.data.username,
+							first_name: result.data.first_name,
+							last_name: result.data.last_name === null ? undefined : result.data.last_name,
+							image_url: result.data.image_url,
+						})
+					}
 					break
 				case 'user.updated':
-					await ctx.runMutation(internal.user.updateUser, {
-						id: result.data.id,
-						username: result.data.username === null ? undefined : result.data.username,
-						first_name: result.data.first_name,
-						last_name: result.data.last_name === null ? undefined : result.data.last_name,
-						image_url: result.data.image_url,
-					})
+					if (result.data.first_name) {
+						await ctx.runMutation(internal.user.updateUser, {
+							id: result.data.id,
+							username: result.data.username === null ? undefined : result.data.username,
+							first_name: result.data.first_name,
+							last_name: result.data.last_name === null ? undefined : result.data.last_name,
+							image_url: result.data.image_url,
+						})
+					}
 					break
 				case 'user.deleted':
 					if (result.data.id && result.data.deleted) {
@@ -90,9 +94,11 @@ http.route({
 					break
 				case 'organization.deleted':
 					console.log(`organization deleted`)
-					await ctx.runMutation(internal.organizations.deleteOrganization, {
-						id: result.data.id,
-					})
+					if (result.data.id) {
+						await ctx.runMutation(internal.organizations.deleteOrganization, {
+							id: result.data.id,
+						})
+					}
 					break
 			}
 
