@@ -167,8 +167,8 @@ const DashboardHeader = () => {
 							disabled={isTrashDisabled()}
 							onClick={emptyTrash}
 						>
-							<Trash2Icon className='size-5 text-destructive-foreground group-hover:text-black' />
-							<p className='hidden md:block text-destructive-foreground group-hover:text-black'>Empyt Trash</p>
+							<Trash2Icon className='size-5 text-destructive-foreground group-hover:dark:text-black' />
+							<p className='hidden md:block text-destructive-foreground group-hover:dark:text-black'>Empyt Trash</p>
 						</Button>
 					) : (
 						<UploadFileDialog>
