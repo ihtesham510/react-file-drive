@@ -50,6 +50,11 @@ export const deleteOrganization = internalMutation({
 			.filter(q => q.eq(q.field('id'), args.id))
 			.first()
 		if (!org) return 'organization not found'
+		const files = await ctx.db
+			.query('Files')
+			.filter(q => q.eq(q.field('org.id'), org._id))
+			.collect()
+		files.forEach(async f => await ctx.db.delete(f._id))
 		return await ctx.db.delete(org._id)
 	},
 })
@@ -125,7 +130,7 @@ export const deleteMembership = internalMutation({
 				.query('Files')
 				.filter(q => q.eq(q.field('org.id'), args.orgId))
 				.collect()
-			files.filter(f=>f.org?.createdby === user._id).forEach(async f => await ctx.db.delete(f._id))
+			files.filter(f => f.org?.createdby === user._id).forEach(async f => await ctx.db.delete(f._id))
 			const updatedUsers = org.users.filter(u => u.userId !== user._id)
 			return await ctx.db.patch(org._id, { users: updatedUsers })
 		}
