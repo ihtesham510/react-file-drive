@@ -1,7 +1,8 @@
+const AUTH_DOMAIN = process.env.CLERK_AUTH_DOMAIN
 export default {
 	providers: [
 		{
-			domain: 'https://humorous-glider-34.clerk.accounts.dev',
+			domain: AUTH_DOMAIN,
 			applicationID: 'convex',
 		},
 	],
