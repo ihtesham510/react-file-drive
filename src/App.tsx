@@ -5,13 +5,14 @@ import UnProtectedRoute from './components/UnProtectedRoute'
 import AllFiles from '@/Pages/Dashboard/AllFiles/index'
 import TrashFiles from '@/Pages/Dashboard/TrashFiles/index'
 import FavoritesFiles from '@/Pages/Dashboard/FavoritesFiles/index'
-
+import Not_Found from '@/Pages/Not_Found'
 import Home from './Pages/Home'
 function App() {
 	return (
 		<>
 			<BrowserRouter>
 				<Routes>
+					<Route path='*' element={<Not_Found />} />
 					<Route
 						path='/'
 						element={
