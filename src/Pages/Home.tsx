@@ -3,7 +3,9 @@ import { SignInButton } from '@clerk/clerk-react'
 const Home = () => {
 	return (
 		<div>
-			<SignInButton>sign in</SignInButton>
+			<SignInButton afterSignInUrl='/dashboard/allfiles' afterSignUpUrl='/dashboard/allfiles'>
+				sign in
+			</SignInButton>
 		</div>
 	)
 }
