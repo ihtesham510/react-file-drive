@@ -121,6 +121,11 @@ export const deleteMembership = internalMutation({
 			.first()
 
 		if (org && user) {
+			const files = await ctx.db
+				.query('Files')
+				.filter(q => q.eq(q.field('org.id'), args.orgId))
+				.collect()
+			files.filter(f=>f.org?.createdby === user._id).forEach(async f => await ctx.db.delete(f._id))
 			const updatedUsers = org.users.filter(u => u.userId !== user._id)
 			return await ctx.db.patch(org._id, { users: updatedUsers })
 		}
