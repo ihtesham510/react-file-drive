@@ -9,13 +9,16 @@ export const createOrganization = internalMutation({
 		updated_at: v.number(),
 	},
 	handler: async (ctx, args) => {
-		return await ctx.db.insert('organizations', {
-			id: args.id,
-			name: args.name,
-			created_at: args.created_at,
-			updated_at: args.updated_at,
-			users: [],
-		})
+		const org = await ctx.db.query('organizations').filter(q => q.eq(q.field('id'), args.id)).first()
+		if (!org) {
+			return await ctx.db.insert('organizations', {
+				id: args.id,
+				name: args.name,
+				created_at: args.created_at,
+				updated_at: args.updated_at,
+				users: [],
+			})
+		}
 	},
 })
 export const updateOrganization = internalMutation({
@@ -65,11 +68,11 @@ export const deleteOrganization = internalMutation({
 // member ship
 
 export const createMembership = internalMutation({
-	args: { orgId: v.string(), userId: v.string(), role: v.string() },
+	args: { org: v.object({ id: v.string(), name: v.string(), created_at: v.number(), updated_at: v.number() }), userId: v.string(), role: v.string() },
 	handler: async (ctx, args) => {
 		const org = await ctx.db
 			.query('organizations')
-			.filter(q => q.eq(q.field('id'), args.orgId))
+			.filter(q => q.eq(q.field('id'), args.org.id))
 			.first()
 		const user = await ctx.db
 			.query('User')
@@ -79,7 +82,15 @@ export const createMembership = internalMutation({
 		if (org && user) {
 			return await ctx.db.patch(org._id, { users: [...org.users, { userId: user._id, role: args.role }] })
 		}
-		if (!org) throw new ConvexError("org not found")
+		if (!org && user) {
+			await ctx.db.insert('organizations', {
+				id: args.org.id,
+				name: args.org.name,
+				created_at: args.org.created_at,
+				updated_at: args.org.updated_at,
+				users: [{ role: 'org:admin', userId: user._id }],
+			})
+		}
 		if (!user) throw new ConvexError('user not found')
 	},
 })

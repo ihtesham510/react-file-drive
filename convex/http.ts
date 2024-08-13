@@ -81,7 +81,12 @@ http.route({
 					console.log(`Member-ship created for ${result.data.public_user_data.identifier}`)
 					await ctx.runMutation(internal.organizations.createMembership, {
 						role: result.data.role,
-						orgId: result.data.organization.id,
+						org: {
+							id: result.data.organization.id,
+							name: result.data.organization.name,
+							updated_at: result.data.organization.updated_at,
+							created_at: result.data.organization.created_at
+						},
 						userId: result.data.public_user_data.user_id,
 					})
 					break
