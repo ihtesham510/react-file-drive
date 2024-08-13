@@ -1,5 +1,5 @@
 import { ConvexError, v } from 'convex/values'
-import { mutation, query } from './_generated/server'
+import { internalMutation, mutation, query } from './_generated/server'
 
 export const getFavorateFiles = query({
 	args: { userId: v.optional(v.string()), orgId: v.optional(v.string()) },
@@ -51,4 +51,16 @@ export const isFavorite = query({
 			.first()
 		return !!fileExist
 	},
+})
+
+export const cleanFavoriteCollection = internalMutation({
+	handler: async (ctx) => {
+		const favFiles = await ctx.db.query('FavoritesFiles').collect()
+		favFiles.forEach(async f => {
+			const fileExist = await ctx.db.get(f.fileId)
+			if (!fileExist) {
+				return await ctx.db.delete(f._id)
+			}
+		})
+	}
 })

@@ -52,9 +52,12 @@ export const deleteOrganization = internalMutation({
 		if (!org) return 'organization not found'
 		const files = await ctx.db
 			.query('Files')
-			.filter(q => q.eq(q.field('org.id'), org._id))
+			.filter(q => q.eq(q.field('org.id'), org.id))
 			.collect()
-		files.forEach(async f => await ctx.db.delete(f._id))
+		files.forEach(async f => {
+			await ctx.db.delete(f._id)
+			await ctx.storage.delete(f.storageId)
+		})
 		return await ctx.db.delete(org._id)
 	},
 })
@@ -76,6 +79,8 @@ export const createMembership = internalMutation({
 		if (org && user) {
 			return await ctx.db.patch(org._id, { users: [...org.users, { userId: user._id, role: args.role }] })
 		}
+		if (!org) throw new ConvexError("org not found")
+		if (!user) throw new ConvexError('user not found')
 	},
 })
 
@@ -130,7 +135,10 @@ export const deleteMembership = internalMutation({
 				.query('Files')
 				.filter(q => q.eq(q.field('org.id'), args.orgId))
 				.collect()
-			files.filter(f => f.org?.createdby === user._id).forEach(async f => await ctx.db.delete(f._id))
+			files.filter(f => f.org?.createdby === user._id).forEach(async f => {
+				await ctx.db.delete(f._id)
+				await ctx.storage.delete(f.storageId)
+			})
 			const updatedUsers = org.users.filter(u => u.userId !== user._id)
 			return await ctx.db.patch(org._id, { users: updatedUsers })
 		}

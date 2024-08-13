@@ -50,30 +50,7 @@ http.route({
 						await ctx.runMutation(internal.user.deleteUserAndData, { id: result.data.id })
 					}
 					break
-				case 'organizationMembership.created':
-					console.log(`Member-ship created for ${result.data.public_user_data.identifier}`)
-					await ctx.runMutation(internal.organizations.createMembership, {
-						role: result.data.role,
-						orgId: result.data.organization.id,
-						userId: result.data.public_user_data.user_id,
-					})
-					break
-				case 'organizationMembership.deleted':
-					console.log(`Member-ship deleted for ${result.data.public_user_data.identifier}`)
-					await ctx.runMutation(internal.organizations.deleteMembership, {
-						orgId: result.data.organization.id,
-						userId: result.data.public_user_data.user_id,
-					})
 
-					break
-				case 'organizationMembership.updated':
-					console.log(`Member-ship updated for ${result.data.public_user_data.identifier}`)
-					await ctx.runMutation(internal.organizations.updateMembership, {
-						role: result.data.role,
-						orgId: result.data.organization.id,
-						userId: result.data.public_user_data.user_id,
-					})
-					break
 				case 'organization.created':
 					console.log(`organization created ${result.data.name}`)
 					await ctx.runMutation(internal.organizations.createOrganization, {
@@ -100,6 +77,31 @@ http.route({
 						})
 					}
 					break
+				case 'organizationMembership.created':
+					console.log(`Member-ship created for ${result.data.public_user_data.identifier}`)
+					await ctx.runMutation(internal.organizations.createMembership, {
+						role: result.data.role,
+						orgId: result.data.organization.id,
+						userId: result.data.public_user_data.user_id,
+					})
+					break
+				case 'organizationMembership.deleted':
+					console.log(`Member-ship deleted for ${result.data.public_user_data.identifier}`)
+					await ctx.runMutation(internal.organizations.deleteMembership, {
+						orgId: result.data.organization.id,
+						userId: result.data.public_user_data.user_id,
+					})
+
+					break
+				case 'organizationMembership.updated':
+					console.log(`Member-ship updated for ${result.data.public_user_data.identifier}`)
+					await ctx.runMutation(internal.organizations.updateMembership, {
+						role: result.data.role,
+						orgId: result.data.organization.id,
+						userId: result.data.public_user_data.user_id,
+					})
+					break
+
 			}
 
 			return new Response(null, {

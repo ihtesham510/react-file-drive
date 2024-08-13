@@ -1,5 +1,5 @@
 import { ConvexError, v } from 'convex/values'
-import { mutation, query } from './_generated/server'
+import { mutation, query, internalMutation } from './_generated/server'
 
 export const getFiles = query({
 	args: { userId: v.optional(v.string()), orgId: v.optional(v.string()) },
@@ -86,6 +86,38 @@ export const emptyTrash = mutation({
 			.order('desc')
 			.collect()
 		const filteredFiles = files.filter(file => trashFiles.includes(file._id))
-		filteredFiles.forEach(async file => await ctx.db.delete(file._id))
+		filteredFiles.forEach(async file => {
+			await ctx.db.delete(file._id)
+			await ctx.storage.delete(file.storageId)
+		})
 	},
+})
+
+
+export const deleteAll = internalMutation({
+	handler: async (ctx) => {
+		const trashFiles = await ctx.db.query('TrashFiles').collect()
+		trashFiles.forEach(async f => {
+			const file = await ctx.db.get(f.fileId)
+			if (file) {
+				await ctx.db.delete(file._id)
+				await ctx.db.delete(f._id)
+			} else {
+				await ctx.db.delete(f._id)
+			}
+		})
+	}
+})
+
+
+export const CleanTrashCollection = internalMutation({
+	handler: async (ctx) => {
+		const favFiles = await ctx.db.query('TrashFiles').collect()
+		favFiles.forEach(async f => {
+			const fileExist = await ctx.db.get(f.fileId)
+			if (!fileExist) {
+				return await ctx.db.delete(f._id)
+			}
+		})
+	}
 })
