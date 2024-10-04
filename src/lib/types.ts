@@ -1,8 +1,8 @@
 import { useOrganization, useUser } from '@clerk/clerk-react'
 import { api } from 'Convex/_generated/api'
-import { Id } from 'Convex/_generated/dataModel'
 import { useQuery } from 'convex/react'
 import { SetStateAction } from 'react'
+import { useGetFiles } from '@/Hooks/useGetFiles'
 
 export type Theme = 'dark' | 'light'
 const Files = () => {
@@ -34,15 +34,5 @@ export interface QueryContextType {
 	setSortType: React.Dispatch<SetStateAction<SortType>>
 }
 
-export interface File {
-	_id: Id<'Files'>
-	_creationTime: number
-	favorite?: boolean | undefined
-	userId?: string | undefined
-	org?: { id: string; createdby: string } | undefined
-	file_name: string
-	file_type: string
-	storageId: Id<'_storage'>
-	url: string
-}
-export type TypeFiles = File[] | undefined
+export type TypeFiles = ReturnType<typeof useGetFiles>
+export type File = NonNullable<TypeFiles>[number]

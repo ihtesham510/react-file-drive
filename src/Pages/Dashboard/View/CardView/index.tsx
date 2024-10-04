@@ -1,4 +1,5 @@
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+
 import { TypeFiles, TypesofFile } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { DownloadIcon, EllipsisVertical } from 'lucide-react'
@@ -7,9 +8,9 @@ import { Id } from 'Convex/_generated/dataModel'
 import { useOrganization } from '@clerk/clerk-react'
 import FileDropDownMenu from '../../FileDropDownMenu'
 import FileCover from './FileCover'
-import NoFiles from './NoFiles'
 import UserTag from './UserTag'
-import EmptyTrash from './EmtpyTrash'
+import NoFiles from '@/components/NoFiles'
+import EmptyTrash from '@/components/EmtpyTrash'
 interface Props {
 	files: TypeFiles
 }

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import UploadFileDialog from '@/components/UploadFileDialog'
 import { useQueryStore } from '@/store'
 import { SortType, TypesofFile } from '@/lib/types'
-import { ArrowDownWideNarrow, ListFilter, PlusIcon, Search, Trash2Icon } from 'lucide-react'
+import { ArrowDownWideNarrow, FileIcon, ListFilter, PlusIcon, Search, TableIcon, Trash2Icon } from 'lucide-react'
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
@@ -16,6 +16,7 @@ import { useLocation } from 'react-router'
 import { useGetTrashFiles } from '@/Hooks/useGetTrashFiles'
 import { useTrash } from '@/Hooks/useTrash'
 import { useGetUserData } from '@/Hooks/useGetUserData'
+import useAppView from '@/Hooks/useAppView'
 interface QuerySortArrayType {
 	value: SortType
 	title: string
@@ -83,6 +84,7 @@ const DashboardHeader = () => {
 	]
 
 	const { searchQuery, setQuery, setFileType, setSortType, sortType, fileType } = useQueryStore()
+	const { view, setView } = useAppView()
 	function isSortItemChecked(sort: SortType): boolean {
 		return sortType === sort
 	}
@@ -103,7 +105,30 @@ const DashboardHeader = () => {
 	return (
 		<>
 			<div className='flex items-center bg-background justify-between p-4'>
-				<div className='relative hidden sm:block'>
+				{/* View Toggle */}
+				<div className='flex bg-secondary rounded-md gap-1 justify-between items-center'>
+					<Button
+						variant={view === 'card' ? 'default' : 'secondary'}
+						size='icon'
+						className='size-max p-2 sm:flex sm:gap-2'
+						onClick={() => setView('card')}
+					>
+						<FileIcon className='size-4' />
+						<p className='hidden md:block'>Card</p>
+					</Button>
+					<Button
+						variant={view === 'table' ? 'default' : 'secondary'}
+						size='icon'
+						className='size-max p-2 sm:flex sm:gap-2'
+						onClick={() => setView('table')}
+					>
+						<TableIcon className='size-4' />
+						<p className='hidden md:block'>Table</p>
+					</Button>
+				</div>
+
+				{/* Search Input */}
+				<div className='relative hidden sm:block lg:ml-24 md:ml-14'>
 					<Search className='absolute left-2 top-3 h-4 w-4 text-muted-foreground' />
 					<Input
 						value={searchQuery}
@@ -113,7 +138,7 @@ const DashboardHeader = () => {
 					/>
 				</div>
 
-				<div className='flex gap-4 w-full justify-end items-center'>
+				<div className='flex gap-2 md:gap-4 justify-end items-center'>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant='outline' size='sm' className='h-8 gap-1'>

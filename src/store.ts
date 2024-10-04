@@ -39,15 +39,24 @@ export const useThemeStore = create<TypeThemeStore>()(set => ({
 export interface TypeAlertDeleteDialog {
 	open: boolean
 	toggleDialog: (e?: boolean) => void
-  confirmAction: () => 
-  void,
+	confirmAction: () => void
 	onConfirm: (func: () => void) => void
 	onCancel: () => void
 }
 export const useAlertDeleteDialog = create<TypeAlertDeleteDialog>(set => ({
-  open: false,
-  confirmAction: () => {},
-  toggleDialog: e => set(state => ({ ...state, open: e ?? !state.open })),
-  onConfirm: func => set(state => ({ ...state, confirmAction: func })),
-  onCancel: () => set(state => ({ ...state, open: false })),
-}));
+	open: false,
+	confirmAction: () => {},
+	toggleDialog: e => set(state => ({ ...state, open: e ?? !state.open })),
+	onConfirm: func => set(state => ({ ...state, confirmAction: func })),
+	onCancel: () => set(state => ({ ...state, open: false })),
+}))
+export type TypeAppView = 'table' | 'card'
+export interface TypeViewStore {
+	view: TypeAppView
+	setView: (view: TypeAppView) => void
+}
+
+export const useAppViewStore = create<TypeViewStore>()(set => ({
+	view: localStorage.getItem('view') === 'card' ? 'card' : 'table',
+	setView: view => set({ view: view }),
+}))
