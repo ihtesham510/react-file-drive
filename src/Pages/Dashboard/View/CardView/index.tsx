@@ -47,7 +47,9 @@ const CardView: React.FC<Props> = ({ files }) => {
 						/>
 					</div>
 					<CardFooter className='my-6'>
-						{organization && file.org && <UserTag userId={(file.userId as Id<'User'>) ?? (file.org?.createdby as Id<'User'>)} />}
+						{organization && file.org && (
+							<UserTag userId={(file.userId as Id<'User'>) ?? (file.org?.createdby as Id<'User'>)} />
+						)}
 						<Link to={file.url} target='_blank' download>
 							<Button className='mx-auto flex gap-1' size='sm'>
 								<DownloadIcon className='size-4' />

@@ -9,7 +9,10 @@ export const createOrganization = internalMutation({
 		updated_at: v.number(),
 	},
 	handler: async (ctx, args) => {
-		const org = await ctx.db.query('organizations').filter(q => q.eq(q.field('id'), args.id)).first()
+		const org = await ctx.db
+			.query('organizations')
+			.filter(q => q.eq(q.field('id'), args.id))
+			.first()
 		if (!org) {
 			return await ctx.db.insert('organizations', {
 				id: args.id,
@@ -68,7 +71,11 @@ export const deleteOrganization = internalMutation({
 // member ship
 
 export const createMembership = internalMutation({
-	args: { org: v.object({ id: v.string(), name: v.string(), created_at: v.number(), updated_at: v.number() }), userId: v.string(), role: v.string() },
+	args: {
+		org: v.object({ id: v.string(), name: v.string(), created_at: v.number(), updated_at: v.number() }),
+		userId: v.string(),
+		role: v.string(),
+	},
 	handler: async (ctx, args) => {
 		const org = await ctx.db
 			.query('organizations')
@@ -146,10 +153,12 @@ export const deleteMembership = internalMutation({
 				.query('Files')
 				.filter(q => q.eq(q.field('org.id'), args.orgId))
 				.collect()
-			files.filter(f => f.org?.createdby === user._id).forEach(async f => {
-				await ctx.db.delete(f._id)
-				await ctx.storage.delete(f.storageId)
-			})
+			files
+				.filter(f => f.org?.createdby === user._id)
+				.forEach(async f => {
+					await ctx.db.delete(f._id)
+					await ctx.storage.delete(f.storageId)
+				})
 			const updatedUsers = org.users.filter(u => u.userId !== user._id)
 			return await ctx.db.patch(org._id, { users: updatedUsers })
 		}

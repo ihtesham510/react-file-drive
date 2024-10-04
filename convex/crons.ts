@@ -4,14 +4,14 @@ const crons = cronJobs()
 crons.weekly('Empty Trash', { dayOfWeek: 'monday', hourUTC: 12, minuteUTC: 2 }, internal.trash.deleteAll)
 
 crons.interval(
-    "clean favorite files table",
-    { minutes: 1 }, // every minute
-    internal.trash.CleanTrashCollection,
-);
+	'clean favorite files table',
+	{ minutes: 1 }, // every minute
+	internal.trash.CleanTrashCollection,
+)
 
 crons.interval(
-    "clean trash files table",
-    { minutes: 1 }, // every minute
-    internal.favorates.cleanFavoriteCollection,
-);
+	'clean trash files table',
+	{ minutes: 1 }, // every minute
+	internal.favorates.cleanFavoriteCollection,
+)
 export default crons

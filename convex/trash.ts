@@ -93,9 +93,8 @@ export const emptyTrash = mutation({
 	},
 })
 
-
 export const deleteAll = internalMutation({
-	handler: async (ctx) => {
+	handler: async ctx => {
 		const trashFiles = await ctx.db.query('TrashFiles').collect()
 		trashFiles.forEach(async f => {
 			const file = await ctx.db.get(f.fileId)
@@ -106,12 +105,11 @@ export const deleteAll = internalMutation({
 				await ctx.db.delete(f._id)
 			}
 		})
-	}
+	},
 })
 
-
 export const CleanTrashCollection = internalMutation({
-	handler: async (ctx) => {
+	handler: async ctx => {
 		const favFiles = await ctx.db.query('TrashFiles').collect()
 		favFiles.forEach(async f => {
 			const fileExist = await ctx.db.get(f.fileId)
@@ -119,5 +117,5 @@ export const CleanTrashCollection = internalMutation({
 				return await ctx.db.delete(f._id)
 			}
 		})
-	}
+	},
 })

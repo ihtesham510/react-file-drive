@@ -4,7 +4,7 @@ import { internalMutation, mutation, query } from './_generated/server'
 export const getFavorateFiles = query({
 	args: { userId: v.optional(v.string()), orgId: v.optional(v.string()) },
 	handler: async (ctx, args) => {
-		const fovirtesfiles = await ctx.db
+		const favoritesFiles = await ctx.db
 			.query('FavoritesFiles')
 			.collect()
 			.then(f => f.map(file => file.fileId))
@@ -22,7 +22,7 @@ export const getFavorateFiles = query({
 			.filter(q => q.eq(q.field(args.orgId ? 'org.id' : 'userId'), args.orgId ?? user._id))
 			.order('desc')
 			.collect()
-		const filteredfiles = files.filter(file => fovirtesfiles.includes(file._id))
+		const filteredfiles = files.filter(file => favoritesFiles.includes(file._id))
 		return filteredfiles.filter(file => !trashFiles.includes(file._id))
 	},
 })
@@ -54,7 +54,7 @@ export const isFavorite = query({
 })
 
 export const cleanFavoriteCollection = internalMutation({
-	handler: async (ctx) => {
+	handler: async ctx => {
 		const favFiles = await ctx.db.query('FavoritesFiles').collect()
 		favFiles.forEach(async f => {
 			const fileExist = await ctx.db.get(f.fileId)
@@ -62,5 +62,5 @@ export const cleanFavoriteCollection = internalMutation({
 				return await ctx.db.delete(f._id)
 			}
 		})
-	}
+	},
 })

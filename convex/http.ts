@@ -85,7 +85,7 @@ http.route({
 							id: result.data.organization.id,
 							name: result.data.organization.name,
 							updated_at: result.data.organization.updated_at,
-							created_at: result.data.organization.created_at
+							created_at: result.data.organization.created_at,
 						},
 						userId: result.data.public_user_data.user_id,
 					})
@@ -106,7 +106,6 @@ http.route({
 						userId: result.data.public_user_data.user_id,
 					})
 					break
-
 			}
 
 			return new Response(null, {
