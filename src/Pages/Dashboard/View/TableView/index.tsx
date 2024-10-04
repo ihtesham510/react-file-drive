@@ -1,7 +1,7 @@
 import { Table, TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
 import { TypeFiles } from '@/lib/types'
 import { useOrganization } from '@clerk/clerk-react'
-import { EllipsisVertical, LoaderCircle } from 'lucide-react'
+import { EllipsisVertical } from 'lucide-react'
 import { api } from 'Convex/_generated/api'
 import { Id } from 'Convex/_generated/dataModel'
 import { useQuery } from 'convex/react'
