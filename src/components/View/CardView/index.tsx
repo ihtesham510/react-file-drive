@@ -21,7 +21,7 @@ const CardView: React.FC<Props> = ({ files }) => {
 	if (files?.length == 0 && !isActive('trash')) return <NoFiles withButton={files?.length == 0 ? true : false} />
 	if (files?.length == 0 && isActive('trash')) return <EmptyTrash />
 	return (
-		<div className='h-max w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4'>
+		<div className='h-max w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-4'>
 			{files?.reverse()?.map(file => (
 				<Card className='' key={file._id}>
 					<CardHeader>

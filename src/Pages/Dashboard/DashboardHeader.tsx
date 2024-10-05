@@ -104,6 +104,13 @@ const DashboardHeader = () => {
 	}
 	return (
 		<>
+			<div className='lg:hidden mx-4 flex justify-center items-center'>
+				<h1 className='text-2xl font-semibold'>
+					{isActive('allfiles') && 'All Files'}
+					{isActive('favorites') && 'Favorites Files'}
+					{isActive('trash') && 'Trashed Files'}
+				</h1>
+			</div>
 			<div className='flex items-center bg-background justify-between p-4'>
 				{/* View Toggle */}
 				<div className='flex bg-secondary rounded-md gap-1 justify-between items-center'>

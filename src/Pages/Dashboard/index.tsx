@@ -3,6 +3,8 @@ import { Outlet } from 'react-router'
 import Header from './Header'
 import { useEffect } from 'react'
 import { useOrganization, useUser } from '@clerk/clerk-react'
+import SideNav from '@/components/SideNav'
+import { ScrollArea } from '@/components/ui/scroll-area'
 const Dashboard = () => {
 	const { organization } = useOrganization()
 	const { user } = useUser()
@@ -22,7 +24,12 @@ const Dashboard = () => {
 		<>
 			<Header />
 			<DashboardHeader />
-			<Outlet />
+			<div className='flex w-full h-full'>
+				<SideNav />
+				<ScrollArea className='h-auto w-full lg:h-[78vh] lg:w-full '>
+					<Outlet />
+				</ScrollArea>
+			</div>
 		</>
 	)
 }
