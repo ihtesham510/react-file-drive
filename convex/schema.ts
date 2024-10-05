@@ -11,7 +11,14 @@ export default defineSchema({
 		org: v.optional(
 			v.object({
 				id: v.string(),
-				createdby: v.id('User'),
+				createdby: v.object({
+					docId: v.id('User'),
+					id: v.string(),
+					first_name: v.string(),
+					last_name: v.optional(v.string()),
+					image_url: v.string(),
+					username: v.optional(v.string()),
+				}),
 			}),
 		),
 	}).searchIndex('name', {

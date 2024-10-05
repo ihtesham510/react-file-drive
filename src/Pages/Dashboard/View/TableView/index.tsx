@@ -2,9 +2,6 @@ import { Table, TableCaption, TableHeader, TableRow, TableHead, TableBody, Table
 import { TypeFiles } from '@/lib/types'
 import { useOrganization } from '@clerk/clerk-react'
 import { EllipsisVertical } from 'lucide-react'
-import { api } from 'Convex/_generated/api'
-import { Id } from 'Convex/_generated/dataModel'
-import { useQuery } from 'convex/react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import FileDropDownMenu from '../../FileDropDownMenu'
 import NoFiles from '@/components/NoFiles'
@@ -45,7 +42,15 @@ const TableView: React.FC<Props> = ({ files }) => {
 							</TableCell>
 							{organization && file.org && (
 								<TableCell className='text-right'>
-									<UserTag userId={file.org.createdby} />
+									<div className='flex items-center justify-end gap-3'>
+										<h1 className='font-semibold mx-1'>
+											{file.org.createdby.username ?? file.org.createdby.first_name}
+										</h1>
+										<Avatar>
+											<AvatarImage src={file.org.createdby.image_url} />
+											<AvatarFallback>{file.org.createdby.username ?? file.org.createdby.first_name}</AvatarFallback>
+										</Avatar>
+									</div>
 								</TableCell>
 							)}
 							<TableCell className='text-right'>
@@ -62,16 +67,4 @@ const TableView: React.FC<Props> = ({ files }) => {
 	)
 }
 
-function UserTag({ userId }: { userId: Id<'User'> }) {
-	const user = useQuery(api.user.getUserbyId, { docId: userId })
-	return (
-		<div className='flex items-center justify-end gap-3'>
-			<h1 className='font-semibold mx-1'>{user?.username ?? user?.first_name}</h1>
-			<Avatar>
-				<AvatarImage src={user?.image_url} />
-				<AvatarFallback>{user?.username}</AvatarFallback>
-			</Avatar>
-		</div>
-	)
-}
 export default TableView

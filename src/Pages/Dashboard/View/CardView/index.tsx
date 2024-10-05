@@ -4,13 +4,13 @@ import { TypeFiles, TypesofFile } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { DownloadIcon, EllipsisVertical } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
-import { Id } from 'Convex/_generated/dataModel'
 import { useOrganization } from '@clerk/clerk-react'
 import FileDropDownMenu from '../../FileDropDownMenu'
 import FileCover from './FileCover'
-import UserTag from './UserTag'
 import NoFiles from '@/components/NoFiles'
 import EmptyTrash from '@/components/EmtpyTrash'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+
 interface Props {
 	files: TypeFiles
 }
@@ -49,7 +49,13 @@ const CardView: React.FC<Props> = ({ files }) => {
 					</div>
 					<CardFooter className='my-6'>
 						{organization && file.org && (
-							<UserTag userId={(file.userId as Id<'User'>) ?? (file.org?.createdby as Id<'User'>)} />
+							<div className='flex items-center gap-3 w-full'>
+								<Avatar>
+									<AvatarImage src={file.org.createdby.image_url} />
+									<AvatarFallback>{file.org.createdby.username}</AvatarFallback>
+								</Avatar>
+								<span>{file.org.createdby.username ?? file.org.createdby.first_name}</span>
+							</div>
 						)}
 						<Link to={file.url} target='_blank' download>
 							<Button className='mx-auto flex gap-1' size='sm'>

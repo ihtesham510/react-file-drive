@@ -22,7 +22,19 @@ export const createFile = mutation({
 			url: args.url,
 			storageId: args.storageId,
 			userId: args.orgId ? undefined : user._id,
-			org: args.orgId ? { id: args.orgId, createdby: user._id } : undefined,
+			org: args.orgId
+				? {
+						id: args.orgId,
+						createdby: {
+							id: user.id,
+							docId: user._id,
+							first_name: user.first_name,
+							last_name: user.last_name,
+							username: user.username,
+							image_url: user.image_url,
+						},
+					}
+				: undefined,
 		})
 	},
 })
