@@ -1,7 +1,7 @@
 import { useGetTrashFiles } from '@/Hooks/useGetTrashFiles'
-import CardView from '../View/CardView'
+import CardView from '@/components/View/CardView'
 import useAppView from '@/Hooks/useAppView'
-import TableView from '../View/TableView'
+import TableView from '@/components/View/TableView'
 
 const TrashFiles = () => {
 	const files = useGetTrashFiles()

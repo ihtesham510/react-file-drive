@@ -3,7 +3,7 @@ import { TypeFiles } from '@/lib/types'
 import { useOrganization } from '@clerk/clerk-react'
 import { EllipsisVertical } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import FileDropDownMenu from '../../FileDropDownMenu'
+import FileDropDownMenu from '@/components/FileDropDownMenu'
 import NoFiles from '@/components/NoFiles'
 import EmptyTrash from '@/components/EmtpyTrash'
 import { useLocation } from 'react-router'
@@ -18,7 +18,7 @@ const TableView: React.FC<Props> = ({ files }) => {
 	if (files?.length == 0 && !isActive('trash')) return <NoFiles withButton={files?.length == 0 ? true : false} />
 	if (files?.length == 0 && isActive('trash')) return <EmptyTrash />
 	return (
-		<Table>
+		<Table className='mx-auto max-w-[93%] md:max-w-[97%] min-w-[30%]'>
 			<TableCaption>
 				List of all your {isActive('trash') && 'Trash'} {isActive('favorites') && 'Favorites'} Files.
 			</TableCaption>

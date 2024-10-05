@@ -30,7 +30,7 @@ const FileDropDownMenu: React.FC<Props> = ({ file, children }) => {
 			await deleteFile({ fileId: file._id, userId: file.userId as Id<'User'> })
 		}
 		if (file.org) {
-			await deleteFile({ fileId: file._id, userId: file.org.createdby as Id<'User'> })
+			await deleteFile({ fileId: file._id, userId: file.org.createdby.docId as Id<'User'> })
 		}
 	}
 	const { toggleDialog, onConfirm } = useAlertDeleteDialog()
@@ -48,7 +48,7 @@ const FileDropDownMenu: React.FC<Props> = ({ file, children }) => {
 	}
 	const handleToggleFavorites = async () => {
 		if (file.org) {
-			await toggleFavorites({ fileId: file._id, userId: file.org.createdby as Id<'User'> })
+			await toggleFavorites({ fileId: file._id, userId: file.org.createdby.docId as Id<'User'> })
 		}
 		if (file.userId) {
 			await toggleFavorites({ fileId: file._id, userId: file.userId as Id<'User'> })
@@ -60,7 +60,7 @@ const FileDropDownMenu: React.FC<Props> = ({ file, children }) => {
 	const userData = useGetUserData()
 	const isDisabled = () => {
 		if (file.org && userData) {
-			if (userData._id === file.org.createdby) return false
+			if (userData._id === file.org.createdby.docId) return false
 			if (userData.role !== 'org:admin') return true
 		}
 		return false
