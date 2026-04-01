@@ -1,5 +1,5 @@
 import { ConvexError, v } from 'convex/values'
-import { mutation, query, internalMutation } from './_generated/server'
+import { internalMutation, mutation, query } from './_generated/server'
 
 export const getFiles = query({
 	args: { userId: v.optional(v.string()), orgId: v.optional(v.string()) },
@@ -26,7 +26,10 @@ export const getFiles = query({
 export const moveToTrash = mutation({
 	args: { fileId: v.id('Files'), userId: v.id('User') },
 	handler: async (ctx, args) => {
-		return await ctx.db.insert('TrashFiles', { fileId: args.fileId, userId: args.userId })
+		return await ctx.db.insert('TrashFiles', {
+			fileId: args.fileId,
+			userId: args.userId,
+		})
 	},
 })
 

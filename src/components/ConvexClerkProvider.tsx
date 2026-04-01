@@ -2,8 +2,8 @@ import { ClerkProvider, useAuth } from '@clerk/clerk-react'
 import { dark } from '@clerk/themes'
 import { ConvexReactClient } from 'convex/react'
 import { ConvexProviderWithClerk } from 'convex/react-clerk'
-import useTheme from '@/Hooks/useTheme'
 import { useMemo } from 'react'
+import useTheme from '@/Hooks/useTheme'
 
 interface Props {
 	children: React.ReactNode
@@ -19,8 +19,7 @@ const ConvexClerkProvider: React.FC<Props> = ({ children }) => {
 		throw new Error('VITE_CONVEX_URL not found')
 	}
 	const convex = new ConvexReactClient(VITE_CONVEX_URL as string)
-	// NOTE: How to switch Clerk Theme
-	const calculatedTheme = useMemo(() => (theme == 'dark' ? dark : undefined), [theme])
+	const calculatedTheme = useMemo(() => (theme === 'dark' ? dark : undefined), [theme])
 	return (
 		<ClerkProvider
 			publishableKey={PUBLISHABLE_KEY}
