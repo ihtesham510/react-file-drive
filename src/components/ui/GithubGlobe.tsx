@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
-//@ts-ignore
-import { Color, Scene, Fog, PerspectiveCamera, Vector3, DirectionalLight } from 'three'
-import ThreeGlobe from 'three-globe'
-import { useThree, Object3DNode, Canvas, extend, useFrame } from '@react-three/fiber'
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: <''> */
+/** biome-ignore-all lint/suspicious/noExplicitAny: <''> */
 import { OrbitControls } from '@react-three/drei'
+import { Canvas, extend, type Object3DNode, useFrame, useThree } from '@react-three/fiber'
+import { useEffect, useRef, useState } from 'react'
+import { Color, DirectionalLight, Fog, PerspectiveCamera, Scene } from 'three'
+import ThreeGlobe from 'three-globe'
 import countries from '@/assets/custom.geo.json'
+
 declare module '@react-three/fiber' {
 	interface ThreeElements {
 		threeGlobe: Object3DNode<ThreeGlobe, typeof ThreeGlobe>
@@ -122,7 +124,7 @@ export function Globe({ globeConfig, data }: GlobeGithubProps) {
 
 	const _buildData = () => {
 		const arcs = data
-		let points = []
+		const points = []
 		for (let i = 0; i < arcs.length; i++) {
 			const arc = arcs[i]
 			const rgb = hexToRgb(arc.color) as { r: number; g: number; b: number }
@@ -159,7 +161,7 @@ export function Globe({ globeConfig, data }: GlobeGithubProps) {
 				.showAtmosphere(defaultProps.showAtmosphere)
 				.atmosphereColor(defaultProps.atmosphereColor)
 				.atmosphereAltitude(defaultProps.atmosphereAltitude)
-				.hexPolygonColor(e => {
+				.hexPolygonColor(_e => {
 					return defaultProps.polygonColor
 				})
 			startAnimation()
@@ -179,13 +181,13 @@ export function Globe({ globeConfig, data }: GlobeGithubProps) {
 			.arcAltitude(e => {
 				return (e as { arcAlt: number }).arcAlt * 1
 			})
-			.arcStroke(e => {
+			.arcStroke(_e => {
 				return [0.42, 0.38, 0.4][Math.round(Math.random() * 2)]
 			})
 			.arcDashLength(defaultProps.arcLength)
 			.arcDashInitialGap(e => (e as { order: number }).order * 1)
 			.arcDashGap(15)
-			.arcDashAnimateTime(e => defaultProps.arcTime)
+			.arcDashAnimateTime(_e => defaultProps.arcTime)
 
 		globeRef.current
 			.pointsData(data)
@@ -209,7 +211,7 @@ export function Globe({ globeConfig, data }: GlobeGithubProps) {
 			if (!globeRef.current || !globeData) return
 			numbersOfRings = genRandomNumbers(0, data.length, Math.floor((data.length * 4) / 5))
 
-			globeRef.current.ringsData(globeData.filter((d, i) => numbersOfRings.includes(i)))
+			globeRef.current.ringsData(globeData.filter((_d, i) => numbersOfRings.includes(i)))
 		}, 2000)
 
 		return () => {
@@ -217,11 +219,7 @@ export function Globe({ globeConfig, data }: GlobeGithubProps) {
 		}
 	}, [globeRef.current, globeData])
 
-	return (
-		<>
-			<threeGlobe ref={globeRef} />
-		</>
-	)
+	return <threeGlobe ref={globeRef} />
 }
 
 export function WebGLRendererConfig() {
@@ -267,9 +265,7 @@ export default function GlobeGithub(props: GlobeGithubProps) {
 
 export function hexToRgb(hex: string) {
 	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
-	hex = hex.replace(shorthandRegex, function (m, r, g, b) {
-		return r + r + g + g + b + b
-	})
+	hex = hex.replace(shorthandRegex, (_m, r, g, b) => r + r + g + g + b + b)
 
 	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
 	return result
